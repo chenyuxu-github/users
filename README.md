@@ -191,16 +191,19 @@ helm upgrade --install users ./deploy/helm/users \
 
 Chart 会通过 ConfigMap 生成 `config/config.toml`，数据库密码会通过 Secret 注入 `DATABASE_PASSWORD` 环境变量。
 
-如果集群里没有 Ingress，可以先使用端口转发访问：
-
-```bash
-kubectl -n users port-forward svc/users 8080:80
-```
-
-然后打开：
+默认 Service 类型是 `NodePort`，端口为 `31888`。安装后可以通过任意节点 IP 访问：
 
 ```text
-http://localhost:8080/
+http://节点IP:31888/
+```
+
+如果 `31888` 已被占用，可以安装时覆盖：
+
+```bash
+helm upgrade --install users ./deploy/helm/users \
+  --namespace users \
+  --create-namespace \
+  --set service.nodePort=31889
 ```
 
 也可以开启 Ingress：
