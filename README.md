@@ -170,8 +170,8 @@ deploy/helm/users
 部署前需要先构建并推送镜像。下面以 Docker Hub 或其他镜像仓库为例：
 
 ```bash
-docker build -t your-registry/users:0.1.0 .
-docker push your-registry/users:0.1.0
+docker build -t docker.io/chenyuxudocker/users:0.1.0 .
+docker push docker.io/chenyuxudocker/users:0.1.0
 ```
 
 安装 Helm Release：
@@ -180,7 +180,7 @@ docker push your-registry/users:0.1.0
 helm upgrade --install users ./deploy/helm/users \
   --namespace users \
   --create-namespace \
-  --set image.repository=your-registry/users \
+  --set image.repository=docker.io/chenyuxudocker/users \
   --set image.tag=0.1.0 \
   --set database.host=mysql \
   --set database.port=3306 \
@@ -209,7 +209,7 @@ http://localhost:8080/
 helm upgrade --install users ./deploy/helm/users \
   --namespace users \
   --create-namespace \
-  --set image.repository=your-registry/users \
+  --set image.repository=docker.io/chenyuxudocker/users \
   --set image.tag=0.1.0 \
   --set ingress.enabled=true \
   --set ingress.className=nginx \

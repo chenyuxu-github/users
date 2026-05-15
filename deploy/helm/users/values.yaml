@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: chenyuxu-github/users
-  tag: latest
+  repository: docker.io/chenyuxudocker/users
+  tag: 0.1.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -11,7 +11,7 @@ server:
   port: 8080
 
 database:
-  host: mysql
+  host: 192.168.71.200
   port: 3306
   username: root
   password: "123"
