@@ -1,0 +1,17 @@
+[server]
+# HTTP 服务监听地址。host 为 0.0.0.0 表示允许外部访问。
+host = "0.0.0.0"
+# HTTP 服务监听端口。
+port = 8080
+
+[database]
+# MySQL 连接配置。
+host = "localhost"
+port = 3306
+username = "root"
+password = "123"
+name = "test"
+# MySQL 连接参数。
+charset = "utf8mb4"
+parse_time = true
+loc = "Local"
