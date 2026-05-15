@@ -29,6 +29,9 @@
 │       └── main.go          # 服务入口
 ├── config
 │   └── config.toml          # 项目配置
+├── deploy
+│   └── helm
+│       └── users            # Helm 部署配置
 ├── internal
 │   ├── config
 │   │   └── config.go        # 配置读取
@@ -45,6 +48,7 @@
 │   └── assets
 │       ├── app.js           # 前端交互逻辑
 │       └── styles.css       # 页面样式
+├── Dockerfile
 ├── go.mod
 ├── go.sum
 └── README.md
@@ -153,4 +157,74 @@ go build -o server ./cmd/server
 
 ```bash
 ./server
+```
+
+## Helm 部署
+
+项目提供了 Helm Chart：
+
+```text
+deploy/helm/users
+```
+
+部署前需要先构建并推送镜像。下面以 Docker Hub 或其他镜像仓库为例：
+
+```bash
+docker build -t your-registry/users:0.1.0 .
+docker push your-registry/users:0.1.0
+```
+
+安装 Helm Release：
+
+```bash
+helm upgrade --install users ./deploy/helm/users \
+  --namespace users \
+  --create-namespace \
+  --set image.repository=your-registry/users \
+  --set image.tag=0.1.0 \
+  --set database.host=mysql \
+  --set database.port=3306 \
+  --set database.username=root \
+  --set database.password=123 \
+  --set database.name=test
+```
+
+Chart 会通过 ConfigMap 生成 `config/config.toml`，数据库密码会通过 Secret 注入 `DATABASE_PASSWORD` 环境变量。
+
+如果集群里没有 Ingress，可以先使用端口转发访问：
+
+```bash
+kubectl -n users port-forward svc/users 8080:80
+```
+
+然后打开：
+
+```text
+http://localhost:8080/
+```
+
+也可以开启 Ingress：
+
+```bash
+helm upgrade --install users ./deploy/helm/users \
+  --namespace users \
+  --create-namespace \
+  --set image.repository=your-registry/users \
+  --set image.tag=0.1.0 \
+  --set ingress.enabled=true \
+  --set ingress.className=nginx \
+  --set ingress.hosts[0].host=users.example.com
+```
+
+查看部署状态：
+
+```bash
+kubectl -n users get pods
+kubectl -n users get svc
+```
+
+卸载：
+
+```bash
+helm uninstall users -n users
 ```

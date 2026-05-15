@@ -1,0 +1,6 @@
+apiVersion: v2
+name: users
+description: 用户管理系统 Helm Chart
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
